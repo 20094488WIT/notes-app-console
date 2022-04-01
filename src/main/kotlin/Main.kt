@@ -1,5 +1,9 @@
 
+import controllers.NoteAPI
+import models.Note
 import utils.ScannerInput
+import utils.ScannerInput.readNextInt
+import utils.ScannerInput.readNextLine
 import java.lang.System.exit
 
 fun main(args: Array<String>) {
@@ -22,14 +26,25 @@ fun mainMenu() : Int {
          > ----------------------------------
          > ==>> """.trimMargin(">"))
 }
+private val noteAPI = NoteAPI()
 
-fun addNote(){
-    println("You chose Add Note")
-}
+fun addNote() {
+    //logger.info { "addNote() function invoked" }
+    val noteTitle = readNextLine("Enter a title for the note: ")
+    val notePriority = readNextInt("Enter a priority (1-low, 2, 3, 4, 5-high): ")
+    val noteCategory = readNextLine("Enter a category for the note: ")
+    val isAdded = noteAPI.add(Note(noteTitle, notePriority, noteCategory, false))
 
-fun listNotes(){
-    println("You chose List Notes")
+    if (isAdded) {
+        println("Added Successfully")
+    } else {
+        println("Add Failed")
+    }
 }
+    fun listNotes(){
+        //logger.info { "listNotes() function invoked" }
+        println(noteAPI.listAllNotes())
+    }
 
 fun updateNote(){
     println("You chose Update Note")
@@ -48,16 +63,18 @@ fun runMenu() {
     do {
         val option = mainMenu()
         when (option) {
-            1  -> addNote()
-            2  -> listNotes()
-            3  -> updateNote()
-            4  -> deleteNote()
-            0  -> exitApp()
+            1 -> addNote()
+            2 -> listNotes()
+            3 -> updateNote()
+            4 -> deleteNote()
+            0 -> exitApp()
             else -> System.out.println("Invalid option entered: ${option}")
 
         }
     } while (true)
 }
+
+
 
 
 

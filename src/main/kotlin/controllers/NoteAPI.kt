@@ -33,6 +33,22 @@ class NoteAPI {
         }
     }
 
+    fun updateNote(indexToUpdate: Int, note: Note?): Boolean {
+        //find the note object by the index number
+        val foundNote = findNote(indexToUpdate)
+
+        //if the note exists, use the note details passed as parameters to update the found note in the ArrayList.
+        if ((foundNote != null) && (note != null)) {
+            foundNote.noteTitle = note.noteTitle
+            foundNote.notePriority = note.notePriority
+            foundNote.noteCategory = note.noteCategory
+            return true
+        }
+
+        //if the note was not found, return false, indicating that the update was not successful
+        return false
+    }
+
     fun listActiveNotes(): String {
         return if (numberOfActiveNotes() == 0) {
             "No active notes stored"
@@ -128,6 +144,10 @@ class NoteAPI {
     fun isValidListIndex(index: Int, list: List<Any>): Boolean {
         return (index >= 0 && index < list.size)
     }
+
+    fun isValidIndex(index: Int) :Boolean{
+        return isValidListIndex(index, notes);
+    }
 }
 
 class NoteAPITest {
@@ -167,6 +187,31 @@ class NoteAPITest {
         swim = null
         populatedNotes = null
         emptyNotes = null
+    }
+
+    @Nested
+    inner class UpdateNotes {
+        @Test
+        fun `updating a note that does not exist returns false`(){
+            assertFalse(populatedNotes!!.updateNote(6, Note("Updating Note", 2, "Work", false)))
+            assertFalse(populatedNotes!!.updateNote(-1, Note("Updating Note", 2, "Work", false)))
+            assertFalse(emptyNotes!!.updateNote(0, Note("Updating Note", 2, "Work", false)))
+        }
+
+        @Test
+        fun `updating a note that exists returns true and updates`() {
+            //check note 5 exists and check the contents
+            assertEquals(swim, populatedNotes!!.findNote(4))
+            assertEquals("Swim - Pool", populatedNotes!!.findNote(4)!!.noteTitle)
+            assertEquals(3, populatedNotes!!.findNote(4)!!.notePriority)
+            assertEquals("Hobby", populatedNotes!!.findNote(4)!!.noteCategory)
+
+            //update note 5 with new information and ensure contents updated successfully
+            assertTrue(populatedNotes!!.updateNote(4, Note("Updating Note", 2, "College", false)))
+            assertEquals("Updating Note", populatedNotes!!.findNote(4)!!.noteTitle)
+            assertEquals(2, populatedNotes!!.findNote(4)!!.notePriority)
+            assertEquals("College", populatedNotes!!.findNote(4)!!.noteCategory)
+        }
     }
 
     @Nested

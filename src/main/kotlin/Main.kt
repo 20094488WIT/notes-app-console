@@ -1,7 +1,23 @@
-fun main(args: Array<String>) {
-    println("Hello World!")
+import java.util.*
 
-    // Try adding program arguments via Run/Debug configuration.
-    // Learn more about running applications: https://www.jetbrains.com/help/idea/running-applications.html.
-    println("Program arguments: ${args.joinToString()}")
+val scanner = Scanner(System.`in`)
+
+fun mainMenu() : Int {
+    println("")
+    println("--------------------")
+    println("NOTE KEEPER APP")
+    println("--------------------")
+    println("NOTE MENU")
+    println("  1) Add a note")
+    println("  2) List all notes")
+    println("  3) Update a note")
+    println("  4) Delete a note")
+    println("--------------------")
+    println("  0) Exit")
+    println("--------------------")
+    print("==>> ")
+    return scanner.nextInt()
 }
+
+
+

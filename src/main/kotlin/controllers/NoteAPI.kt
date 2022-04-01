@@ -2,12 +2,133 @@ package controllers
 
 import models.Note
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import kotlin.test.assertEquals
+
+class NoteAPI {
+    private var notes = ArrayList<Note>()
+
+    fun add(note: Note): Boolean {
+        return notes.add(note)
+    }
+
+    fun deleteNote(indexToDelete: Int): Note? {
+        return if (isValidListIndex(indexToDelete, notes)) {
+            notes.removeAt(indexToDelete)
+        } else null
+    }
+
+    fun listAllNotes(): String {
+        return if (notes.isEmpty()) {
+            "No notes stored"
+        } else {
+            var listOfNotes = ""
+            for (i in notes.indices) {
+                listOfNotes += "${i}: ${notes[i]} \n"
+            }
+            val listOfNotes1 = listOfNotes
+            listOfNotes1
+        }
+    }
+
+    fun listActiveNotes(): String {
+        return if (numberOfActiveNotes() == 0) {
+            "No active notes stored"
+        } else {
+            var listOfActiveNotes = ""
+            for (note in notes) {
+                if (!note.isNoteArchived) {
+                    listOfActiveNotes += "${notes.indexOf(note)}: $note \n"
+                }
+            }
+            listOfActiveNotes
+        }
+    }
+
+    fun listArchivedNotes(): String {
+        return if (numberOfArchivedNotes() == 0) {
+            "No archived notes stored"
+        } else {
+            var listOfArchivedNotes = ""
+            for (note in notes) {
+                if (note.isNoteArchived) {
+                    listOfArchivedNotes += "${notes.indexOf(note)}: $note \n"
+                }
+            }
+            listOfArchivedNotes
+        }
+    }
+
+    fun listNotesBySelectedPriority(priority: Int): String {
+        return if (notes.isEmpty()) {
+            "No notes stored"
+        } else {
+            var listOfNotes = ""
+            for (i in notes.indices) {
+                if (notes[i].notePriority == priority) {
+                    listOfNotes +=
+                        """$i: ${notes[i]}
+                        """.trimIndent()
+                }
+            }
+            if (listOfNotes.equals("")) {
+                "No notes with priority: $priority"
+            } else {
+                "${numberOfNotesByPriority(priority)} notes with priority $priority: $listOfNotes"
+            }
+        }
+    }
+
+    fun numberOfNotes(): Int {
+        return notes.size
+    }
+
+    fun numberOfArchivedNotes(): Int {
+        //return notes.stream().filter { obj: Note -> obj.isNoteArchived }.count().toInt()
+        var counter = 0
+        for (note in notes) {
+            if (note.isNoteArchived) {
+                counter++
+            }
+        }
+        return counter
+    }
+
+    fun numberOfActiveNotes(): Int {
+        //return notes.stream().filter { p: Note -> !p.isNoteArchived }.count().toInt()
+        var counter = 0
+        for (note in notes) {
+            if (!note.isNoteArchived) {
+                counter++
+            }
+        }
+        return counter
+    }
+
+    fun numberOfNotesByPriority(priority: Int): Int {
+        //return notes.stream().filter { p: Note -> p.notePriority == priority }.count().toInt()
+        var counter = 0
+        for (note in notes) {
+            if (note.notePriority == priority) {
+                counter++
+            }
+        }
+        return counter
+    }
+
+    fun findNote(index: Int): Note? {
+        return if (isValidListIndex(index, notes)) {
+            notes[index]
+        } else null
+    }
+
+    //utility method to determine if an index is valid in a list.
+    fun isValidListIndex(index: Int, list: List<Any>): Boolean {
+        return (index >= 0 && index < list.size)
+    }
+}
 
 class NoteAPITest {
 
@@ -48,6 +169,25 @@ class NoteAPITest {
         emptyNotes = null
     }
 
+    @Nested
+    inner class DeleteNotes {
+
+        @Test
+        fun `deleting a Note that does not exist, returns null`() {
+            assertNull(emptyNotes!!.deleteNote(0))
+            assertNull(populatedNotes!!.deleteNote(-1))
+            assertNull(populatedNotes!!.deleteNote(5))
+        }
+
+        @Test
+        fun `deleting a note that exists delete and returns deleted object`() {
+            assertEquals(5, populatedNotes!!.numberOfNotes())
+            assertEquals(swim, populatedNotes!!.deleteNote(4))
+            assertEquals(4, populatedNotes!!.numberOfNotes())
+            assertEquals(learnKotlin, populatedNotes!!.deleteNote(0))
+            assertEquals(3, populatedNotes!!.numberOfNotes())
+        }
+    }
     @Nested
     inner class AddNotes {
         @Test

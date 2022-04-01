@@ -66,8 +66,7 @@ fun runMenu() {
     } while (true)
 }
 
-fun main(args: Array<String>) {
-    runMenu()
-}
+
+
 
 

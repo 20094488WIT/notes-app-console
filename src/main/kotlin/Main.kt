@@ -17,6 +17,20 @@ fun mainMenu() : Int {
     println("--------------------")
     print("==>> ")
     return scanner.nextInt()
+
+    fun runMenu() {
+        do {
+            val option = mainMenu()
+            when (option) {
+                1  -> addNote()
+                2  -> listNotes()
+                3  -> updateNote()
+                4  -> deleteNote()
+                0  -> exitApp()
+                else -> System.out.println("Invalid option entered: " + option)
+            }
+        } while (true)
+    }
 }
 
 

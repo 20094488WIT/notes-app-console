@@ -19,6 +19,8 @@ class NoteAPITest {
     private var populatedNotes: NoteAPI? = NoteAPI()
     private var emptyNotes: NoteAPI? = NoteAPI()
 
+
+
     @BeforeEach
     fun setup(){
         learnKotlin = Note("Learning Kotlin", 5, "College", false)
